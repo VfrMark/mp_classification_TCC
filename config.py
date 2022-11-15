@@ -15,7 +15,7 @@ path_dic = {
     }
 
 def _seed():
-    return 0
+    return 42
 
 def _scaler_list():
     return ['std']

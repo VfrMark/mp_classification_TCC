@@ -10,11 +10,6 @@ import numpy as np
 
 #Sklearn API
 
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 
 #Tensorflow API
@@ -22,9 +17,11 @@ from tensorflow import keras
 from tensorflow.keras.wrappers.scikit_learn import KerasClassifier
 from tensorflow.keras.callbacks import EarlyStopping
 
+#Config file
+import config
 
 #Fix seed to reproducibility
-seed = 0
+seed = config._seed() 
 
 #Be aware about Keras's issue https://github.com/keras-team/keras/issues/13586
 #Solution here https://stackoverflow.com/questions/62801440/kerasregressor-cannot-clone-object-no-idea-why-this-error-is-being-thrown/66771774#66771774
