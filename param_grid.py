@@ -75,60 +75,9 @@ def neural_grid(epochs = 1000, patience = 3):
 
 #Basic grid structure for classical algorithms, expecpt neural network
 def classical_grid():
-    
-    
-    decision_tree = {'estimator':[DecisionTreeClassifier(random_state = seed)],
-                     'estimator__criterion':  ['gini', 'entropy'],
-                     'estimator__splitter': ['best', 'random']
-                     }
-    
-    #NaiveBayes
-    gaussian_nb = { 'estimator': [GaussianNB()] }
-
-    #Knn
-    knn = {'estimator': [KNeighborsClassifier()],
-           'estimator__n_neighbors' : [1, 3, 5, 7, 9, 10, 11, 13],
-           'estimator__weights' : ['uniform', 'distance'],
-           'estimator__p' : [1, 2, 3, 4]
-           }
-    
-    #Random_forest
-    random_forest ={'estimator': [RandomForestClassifier(random_state = seed)],
-                    'estimator__n_estimators' : [10, 50, 100, 500],
-                    'estimator__criterion' : ['gini', 'entropy']
-    }
-    
+  
     #Parameter C, used in several models    
     c_list = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
-    
-    #Losgitic Regression with l2 penalty
-    logistic_regression_1 = {'estimator': [LogisticRegression(
-                                            solver='newton-cg',
-                                            penalty='l2',
-                                            multi_class = 'auto',
-                                            random_state = seed)],
-                              'estimator__C' : c_list.copy()
-                              }
-    
-
-    #Logistic Regression with l1 penalty
-    logistic_regression_2 = {'estimator': [LogisticRegression(
-                                            solver = 'liblinear',
-                                            penalty = 'l1',
-                                            multi_class='auto',
-                                            random_state = seed)],
-                            'estimator__C' : c_list.copy()
-                            }
-
-    #Losgitic Regression with elasticnet penalty
-    logistic_regression_3 = {'estimator': [LogisticRegression(
-                                            solver = 'saga',
-                                            penalty = 'elasticnet',
-                                            multi_class='auto',
-                                            random_state = seed)],
-                            'estimator__l1_ratio': np.arange(0.1, 1, 0.1),
-                            'estimator__C' : c_list.copy()
-                            }
 
     #Suppport vector machine with linear kernel    
     svc_1 = {'estimator': [SVC(kernel = 'linear', probability=True, 
@@ -143,7 +92,4 @@ def classical_grid():
              'estimator__gamma' : ['scale', 'auto']
         }
 
-    return [decision_tree, gaussian_nb, knn, random_forest,
-            logistic_regression_1, logistic_regression_2, 
-            logistic_regression_3, svc_1, svc_2]
-    
+    return [svc_1, svc_2]

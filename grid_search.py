@@ -28,12 +28,12 @@ import config
 seed = config._seed()
 gs_folder = config._get_path('grid_search')
 
-def search(scaler = '', 
-           baseline = True,
-           pca = True, 
+def search(scaler = '',
+           #I didn't want to delete the baseline from original project, then just set as False.
+           baseline = False,
            over_sample = True, 
-           param_grid = classical_grid(), 
-           prefix = '', 
+           param_grid = classical_grid(),
+           prefix = '',
            n_jobs = 1,
            save = True):
     
@@ -51,8 +51,8 @@ def search(scaler = '',
     print('Building pipeline...')
     pipe, file_name = build_pipe(scaler = scaler, 
                                  baseline = baseline,
-                                 pca = pca, 
-                                 over_sample = over_sample)
+                                 over_sample = over_sample
+                                )
     
     file_name = prefix + file_name + 'gs.csv'
     
@@ -90,17 +90,13 @@ def run_gs():
     i = 0
     print('GridSearch across several combinations')
           
-    for scaler, pca, over, nn, baseline in product([False, True], repeat = 5):
+    for over in [False, True]:
         
         i += 1
         
-        grid = neural_grid() if nn else classical_grid()
+        grid = classical_grid() # neural_grid() if nn else classical_grid() (Maybe use nn in future)
         
-        file_name = f_name(nn=nn,
-                           baseline=baseline, 
-                           scaler=scaler, 
-                           pca= pca, 
-                           over_sample= over)
+        file_name = f_name(over_sample= over)
     
         file_path = os.path.join(gs_folder, file_name)
         
@@ -110,12 +106,8 @@ def run_gs():
         else:
             print("{0} iteration ({1}/32)...".format(file_name, str(i)))
             start = timer()
-            search(scaler = 'std' if scaler else '', 
-                   baseline = baseline,
-                   pca = pca, 
-                   over_sample = over, 
-                   param_grid = grid, 
-                   prefix = 'nn_' if nn else '',
+            search(over_sample = over, 
+                   param_grid = grid,
                    n_jobs = 1)
             end = timer()
             append_time(file_name, str(end - start))
