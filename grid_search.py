@@ -8,7 +8,6 @@ Created on Mon Aug 24 17:52:03 2020
 #Standard modules
 import os
 import pandas as pd
-from itertools import product
 from timeit import default_timer as timer
 
 #Sklearn Model Selection
@@ -18,7 +17,7 @@ from sklearn.model_selection import StratifiedKFold
 #Project modules
 from utils import file_name as f_name
 from utils import append_time
-from param_grid import search_grid, classical_grid
+from param_grid import search_grid
 from pipeline import build_pipe
 from baseline import als
 
@@ -32,7 +31,7 @@ def search(scaler = '',
            #I didn't want to delete the baseline from original project, then just set as False.
            baseline = False,
            over_sample = True, 
-           param_grid = classical_grid(),
+           param_grid = search_grid(),
            prefix = '',
            n_jobs = 1,
            save = True
@@ -91,7 +90,7 @@ def search(scaler = '',
 def run_gs():
     
     i = 0
-    print('GridSearch across several combinations')
+    print('RadomizedSearch across several combinations')
           
     for over in [False, True]:
         
@@ -115,7 +114,7 @@ def run_gs():
             end = timer()
             append_time(file_name, str(end - start))
             
-    print("GridSearch fully finished...")
+    print("RadomizedSearch fully finished...")
 
 if __name__ == "__main__":
     run_gs()
