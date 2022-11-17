@@ -45,16 +45,9 @@ def build_row(X_test, y_test, y_pred):
   
     return result        
 
-def file_name(nn = False, baseline=False, scaler=False, 
-              pca=False, over_sample=False):
-    
-    prefix = 'nn_' if nn else ''
-    sc = 'std_' if scaler else ''
-    baseline = 'baseline_' if baseline else '' 
-    pc = 'pca_' if pca else ''
-    ov = 'over_' if over_sample else ''
-    
-    return  prefix + baseline + sc +  pc + ov + 'gs.csv'
+def file_name(over_sample=False):
+
+    return 'over_gs.csv' if over_sample else 'gs.csv'
 
 def load_encoder():
     return pickle.load(open(os.path.join('data', 'enconder.sav'), 'rb'))

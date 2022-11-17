@@ -19,7 +19,6 @@ from utils import file_name as f_name
 from utils import append_time
 from param_grid import search_grid
 from pipeline import build_pipe
-from baseline import als
 
 #Config module
 import config
@@ -27,10 +26,7 @@ import config
 seed = config._seed()
 gs_folder = config._get_path('grid_search')
 
-def search(scaler = '',
-           #I didn't want to delete the baseline from original project, then just set as False.
-           baseline = False,
-           over_sample = True, 
+def search(over_sample = True, 
            param_grid = search_grid(),
            prefix = '',
            n_jobs = 1,
@@ -42,17 +38,8 @@ def search(scaler = '',
     X_train = pd.read_csv(os.path.join('data', 'X_train.csv')) 
     y_train = pd.read_csv(os.path.join('data', 'y_train.csv')).values.ravel() 
     
-    if(baseline):
-        print('Applying baseline correction...')
-        for idx, row in X_train.iterrows():
-            X_train.iloc[idx, :] = row - als(row)
-    
-    
     print('Building pipeline...')
-    pipe, file_name = build_pipe(scaler = scaler, 
-                                 baseline = baseline,
-                                 over_sample = over_sample
-                                )
+    pipe, file_name = build_pipe(over_sample = over_sample)
     
     file_name = prefix + file_name + 'gs.csv'
     

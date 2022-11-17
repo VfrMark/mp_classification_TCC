@@ -19,28 +19,19 @@ import config
 seed = config._seed()
         
     
-def build_pipe(scaler = '', 
-               baseline = False, 
-               over_sample = True):
+def build_pipe(over_sample = True):
     
-    prefix = 'baseline_' if baseline else ''
+    prefix = ''
     
-    pre_pipe =[('estimator', DummyClassifier())]
-
-
-    scaler_dictionary = {
-        'std' : StandardScaler()
-        }
-
-    if(scaler in scaler_dictionary):
-        
-        prefix += scaler + '_'    
-        pre_pipe.insert(-1, ('scaler', scaler_dictionary[scaler]))         
+    pre_pipe =[
+        ('std', StandardScaler())
+        , ('estimator', DummyClassifier())
+        ]     
 
     if(over_sample):
         
        prefix += 'over_'
-        
+
        pre_pipe.insert(-1, ('over_sample',
                             RandomOverSampler(random_state = seed)) 
                              )
@@ -51,15 +42,6 @@ def pipe_config(file_name):
     
     values = file_name.split('_')
     
-    scaler_list = [x for x in config._scaler_list() if x in values]
-    
-    try:
-        scaler = scaler_list[0]
-    except:
-        scaler = ''
-    
-    over_sample = True if 'over' in values else False
-    
-    return scaler, over_sample
+    return True if 'over' in values else False
   
     

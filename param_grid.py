@@ -13,29 +13,29 @@ from scipy.stats import loguniform
 
 from sklearn.svm import SVC
 from sklearn.model_selection import ParameterSampler
+from sklearn.mixture import GaussianMixture
 
 #Config file
 import config
 
 #Fix seed to reproducibility
-seed = config._seed()
+SEED = config._seed()
 
-#Basic grid structure for classical algorithms, expecpt neural network
-def classical_grid():
+def get_grid():
 
     #Suppport vector machine with linear kernel
-    svc_1 = {
+    svc = {
         'estimator': [
             SVC(
                 kernel = 'linear'
                 , probability=True
-                , random_state = seed
+                , random_state = SEED
             )
         ]
         , 'estimator__C' : loguniform(1e-5, 1000)
     }
 
-    return {"svc_1" : svc_1}
+    return [svc]
 
 def process_value(val):
 
@@ -47,13 +47,13 @@ def process_value(val):
 def search_grid(n_parameters_by_model=15):
 
     grid = {}
-    _grid = classical_grid()
+    _grid = get_grid()
 
     for model in _grid:
 
         param_list = list(
             ParameterSampler(
-                _grid[model], n_iter=n_parameters_by_model, random_state=seed
+                model, n_iter=n_parameters_by_model, random_state=SEED
             )
         )
 
