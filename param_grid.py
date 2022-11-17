@@ -35,7 +35,7 @@ def get_grid():
         , 'estimator__C' : loguniform(1e-5, 1000)
     }
 
-    return [svc]
+    return {'svc': svc}
 
 def process_value(val):
 
@@ -53,7 +53,9 @@ def search_grid(n_parameters_by_model=15):
 
         param_list = list(
             ParameterSampler(
-                model, n_iter=n_parameters_by_model, random_state=SEED
+                _grid[model]
+                , n_iter=n_parameters_by_model
+                , random_state=SEED
             )
         )
 

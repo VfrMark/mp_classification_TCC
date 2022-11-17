@@ -96,7 +96,7 @@ def run_gs():
             print("{0} iteration ({1}/32)...".format(file_name, str(i)))
             start = timer()
             search(over_sample = over, 
-                   param_grid = grid,
+                   param_grid = grid['svc'],
                    n_jobs = 1)
             end = timer()
             append_time(file_name, str(end - start))

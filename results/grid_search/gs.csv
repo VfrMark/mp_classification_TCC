@@ -1,0 +1,11 @@
+estimator__C,estimator,std,neg_log_loss
+0.009916,"SVC(C=0.009916, kernel='linear', probability=True, random_state=42)",0.024571045480538446,-0.49329982983427784
+0.644051,"SVC(C=0.009916, kernel='linear', probability=True, random_state=42)",0.027914726966865443,-0.521508023252851
+4.619347,"SVC(C=0.009916, kernel='linear', probability=True, random_state=42)",0.02671575861137944,-0.5320525053356764
+574.485164,"SVC(C=0.009916, kernel='linear', probability=True, random_state=42)",0.027532404717612594,-0.5331023020693479
+403.380083,"SVC(C=0.009916, kernel='linear', probability=True, random_state=42)",0.027532404717612594,-0.5331023020693479
+7.177142,"SVC(C=0.009916, kernel='linear', probability=True, random_state=42)",0.02751959415920117,-0.533126498872497
+0.0005,"SVC(C=0.009916, kernel='linear', probability=True, random_state=42)",0.04345410404156297,-0.5607987221529358
+0.000285,"SVC(C=0.009916, kernel='linear', probability=True, random_state=42)",0.05195551928220978,-0.6017418473489216
+0.000177,"SVC(C=0.009916, kernel='linear', probability=True, random_state=42)",0.05055621647264566,-0.6473300998088731
+0.000177,"SVC(C=0.009916, kernel='linear', probability=True, random_state=42)",0.05055621647264566,-0.6473300998088731
