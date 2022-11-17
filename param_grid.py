@@ -28,56 +28,6 @@ import config
 seed = config._seed()
 rng = config._rng()
 
-#Be aware about Keras's issue https://github.com/keras-team/keras/issues/13586
-#Solution here https://stackoverflow.com/questions/62801440/kerasregressor-cannot-clone-object-no-idea-why-this-error-is-being-thrown/66771774#66771774
-
-
-
-
-#Basic setup to build neural network
-def build_nn(n_hidden = 1, 
-             n_neurons = 50, 
-             momentum = 0.9,
-             learning_rate = 0.001, 
-             act = "sigmoid"):
-    
-    model = keras.models.Sequential()
-    
-    for layer in range(int(n_hidden)):
-        model.add(keras.layers.Dense(n_neurons, activation= act))
-        
-    model.add(keras.layers.Dense(14, activation="softmax"))
-    
-    optimizer = keras.optimizers.SGD(momentum = momentum,
-                                     nesterov = True, 
-                                     lr=learning_rate)
-    
-    model.compile(loss="sparse_categorical_crossentropy", 
-                  optimizer=optimizer,
-                  metrics=["accuracy"])
-    
-    return model
-
-
-def neural_grid(epochs = 1000, patience = 3):
-
-    #Create dictionary with base model, including parameter grid
-    neural_network = {'estimator': [KerasClassifier(build_nn, 
-                                 epochs = epochs,
-                                 callbacks = [EarlyStopping(monitor='loss', 
-                                                            patience= patience,
-                                                            min_delta=0.001
-                                                            )]
-                                 )],
-        "estimator__n_hidden": [1, 2, 3, 4, 5],
-        "estimator__n_neurons": [10, 50, 100, 150, 200],
-        "estimator__momentum" : np.arange(0.1, 0.9, 0.3),
-        "estimator__learning_rate": [1e-3, 1e-2, 1e-1],
-        "estimator__act": ["relu", "sigmoid", "tanh"],
-        }
-    
-    return [neural_network]
-
 #Basic grid structure for classical algorithms, expecpt neural network
 def classical_grid():
   
