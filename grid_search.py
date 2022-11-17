@@ -12,13 +12,13 @@ from itertools import product
 from timeit import default_timer as timer
 
 #Sklearn Model Selection
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import StratifiedKFold
 
 #Project modules
 from utils import file_name as f_name
 from utils import append_time
-from param_grid import neural_grid, classical_grid
+from param_grid import search_grid, classical_grid
 from pipeline import build_pipe
 from baseline import als
 
@@ -35,7 +35,8 @@ def search(scaler = '',
            param_grid = classical_grid(),
            prefix = '',
            n_jobs = 1,
-           save = True):
+           save = True
+        ):
     
     
     print('Loading training set...')
@@ -61,12 +62,14 @@ def search(scaler = '',
     cv_fixed_seed = StratifiedKFold(n_splits = 5, shuffle = False)
 
     print('Running parameter search (It can take a long time) ...')
-    search = GridSearchCV(pipe,
+    search = RandomizedSearchCV(pipe,
                           param_grid,
                           scoring = 'neg_log_loss',
                           cv = cv_fixed_seed,
                           n_jobs = n_jobs,
-                          verbose = 100)
+                          verbose = 100,
+                          random_state = seed
+                        )
 
     search = search.fit(X_train, y_train)
 
@@ -94,7 +97,7 @@ def run_gs():
         
         i += 1
         
-        grid = classical_grid() # neural_grid() if nn else classical_grid() (Maybe use nn in future)
+        grid = search_grid() # neural_grid() if nn else classical_grid() (Maybe use nn in future)
         
         file_name = f_name(over_sample= over)
     

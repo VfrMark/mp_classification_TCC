@@ -59,9 +59,8 @@ def pipe_config(file_name):
         scaler = ''
     
     baseline = True if 'baseline' in values else False
-    pca = True if 'pca' in values else False
     over_sample = True if 'over' in values else False
     
-    return baseline, scaler, pca, over_sample
+    return baseline, scaler, over_sample
   
     

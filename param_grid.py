@@ -7,10 +7,14 @@ Created on Tue Mar 23 08:50:53 2021
 
 #Standard Packages 
 import numpy as np
+from scipy.stats import randint
+from scipy.stats import uniform
+from scipy.stats import loguniform
 
 #Sklearn API
 
 from sklearn.svm import SVC
+from sklearn.model_selection import ParameterSampler
 
 #Tensorflow API
 from tensorflow import keras
@@ -21,7 +25,8 @@ from tensorflow.keras.callbacks import EarlyStopping
 import config
 
 #Fix seed to reproducibility
-seed = config._seed() 
+seed = config._seed()
+rng = config._rng()
 
 #Be aware about Keras's issue https://github.com/keras-team/keras/issues/13586
 #Solution here https://stackoverflow.com/questions/62801440/kerasregressor-cannot-clone-object-no-idea-why-this-error-is-being-thrown/66771774#66771774
@@ -76,20 +81,47 @@ def neural_grid(epochs = 1000, patience = 3):
 #Basic grid structure for classical algorithms, expecpt neural network
 def classical_grid():
   
-    #Parameter C, used in several models    
-    c_list = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
+    #Parameter C, used in several models
+    c_list = loguniform(1e-5, 1000)
 
-    #Suppport vector machine with linear kernel    
-    svc_1 = {'estimator': [SVC(kernel = 'linear', probability=True, 
-                               random_state = seed)],
-             'estimator__C' : c_list.copy() 
-             }
-    
-    #Suppport vector machine with non-linear kernel
-    svc_2 = {'estimator': [SVC(probability=True, random_state = seed)],
-             'estimator__C' : c_list.copy(),
-             'estimator__kernel' : ['rbf', 'poly', 'sigmoid'],
-             'estimator__gamma' : ['scale', 'auto']
-        }
+    #Suppport vector machine with linear kernel
+    svc_1 = {
+        'estimator': [
+            SVC(
+                kernel = 'linear'
+                , probability=True
+                , random_state = seed
+            )
+        ]
+        , 'estimator__C' : c_list.copy() 
+    }
 
-    return [svc_1, svc_2]
+    return [svc_1]
+
+def process_value(val):
+
+    if isinstance(val, (np.floating, float)):
+        return np.round(val, 6)
+
+    return val
+
+def search_grid(n_inputs, n_parameters_by_model=15):
+
+    grid = {}
+    _grid = classical_grid(n_inputs)
+
+    for model in _grid:
+
+        param_list = list(
+            ParameterSampler(
+                _grid[model], n_iter=n_parameters_by_model, random_state=rng
+            )
+        )
+
+        grid[model] = [
+            dict(
+                (k, [process_value(v)]) for (k, v) in d.items()
+            ) for d in param_list
+        ]
+
+    return grid
