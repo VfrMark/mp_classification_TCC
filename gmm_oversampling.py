@@ -72,7 +72,7 @@ class oversample_gmm(BaseEstimator, TransformerMixin):
             gmm_model = self.gmm_models['gmm_' + str(sample_class)]
             
             X_sampled_data = gmm_model.sample(sample_numbers)
-            X_sampled_data = pd.DataFrame(X_sampled_data, columns = X_resampled.columns)
+            X_sampled_data = pd.DataFrame(X_sampled_data[0], columns = X_resampled.columns)
             
             preparing_labels = [sample_class for n in range(sample_numbers)]
             y_sampled_data = pd.DataFrame(preparing_labels, columns = ['label'])
@@ -81,3 +81,12 @@ class oversample_gmm(BaseEstimator, TransformerMixin):
             y_resampled = pd.concat([y_resampled, y_sampled_data], ignore_index=True)
 
         return X_resampled, y_resampled
+
+import os
+    
+X_train = pd.read_csv(os.path.join('data', 'X_train.csv')) 
+y_train = pd.read_csv(os.path.join('data', 'y_train.csv'))
+gmm = oversample_gmm()
+
+gmm.fit(X_train, y_train)
+gmm.transform(X_train, y_train)
