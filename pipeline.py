@@ -19,7 +19,7 @@ import config
 seed = config._seed()
         
     
-def build_pipe(over_sample = True):
+def build_pipe(over_sample = False, gmm = True):
     
     prefix = ''
     
@@ -36,12 +36,23 @@ def build_pipe(over_sample = True):
                             RandomOverSampler(random_state = seed)) 
                              )
 
+    if(gmm):
+        
+       prefix += 'gmm_'
+
+       pre_pipe.insert(-1, ('gmm_',
+                            GaussianMixture(random_state = seed)) 
+                             )
+
     return  Pipeline(pre_pipe), prefix
 
 def pipe_config(file_name):
     
     values = file_name.split('_')
-    
-    return True if 'over' in values else False
+
+    over_sample = True if 'over' in values else False
+    gmm = True if 'gmm' in values else False
+
+    return over_sample, 
   
     
