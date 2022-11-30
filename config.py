@@ -6,7 +6,7 @@ Created on Tue Apr 13 21:37:51 2021
 update
 """
 import os
-
+import numpy as np
 
 path_dic = {
     'mccv': os.path.join('results', 'mccv'),
@@ -16,6 +16,9 @@ path_dic = {
 
 def _seed():
     return 42
+
+def _rng():
+    return np.random.RandomState(_seed)
 
 def _scaler_list():
     return ['std']
