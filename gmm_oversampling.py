@@ -1,7 +1,8 @@
 # sklearn tools needed
 from sklearn.mixture import GaussianMixture
-from sklearn.preprocessing import FunctionTransformer
+from sklearn.utils import shuffle
 from sklearn.base import BaseEstimator, TransformerMixin
+
 
 # Standard libaries
 import numpy as np
@@ -11,13 +12,16 @@ import config
 SEED = config._seed()
 
 class oversample_gmm(BaseEstimator, TransformerMixin):
-    def __init__(self, n_class_var = 14) -> None:
-        self.n_class = n_class_var
+    def __init__(self, k_components = [1 for i in range(14)]) -> None:
+        self.k_components = k_components
 
-    def sample_numbers(self, X, y=None):
+    def sample_numbers(self, X=None, y=None):
         dict_class_n = {}
         classe = []
         numbers = []
+
+        X = pd.DataFrame(data=X)
+        y = pd.DataFrame(data=y, columns=['label'])
 
         classes = y['label'].unique()
     
@@ -38,8 +42,11 @@ class oversample_gmm(BaseEstimator, TransformerMixin):
 
         return classes, classes_to_sample, class_most_n
     
-    def fit(self, X, y=None, n_components=1):
+    def fit(self, X, y=None):
         classes, _, _ = self.sample_numbers(X, y)
+
+        X = pd.DataFrame(data=X)
+        y = pd.DataFrame(data=y)
 
         self.gmm_models = {}
 
@@ -47,8 +54,9 @@ class oversample_gmm(BaseEstimator, TransformerMixin):
             target_class_indices = np.flatnonzero(y == sample_class)
             
             X_filtered = X.iloc[target_class_indices]
+            k_component = self.k_components[sample_class]
 
-            gmm = GaussianMixture(n_components
+            gmm = GaussianMixture(n_components=k_component
                 , max_iter=10000
                 , random_state=SEED
             )
@@ -57,12 +65,15 @@ class oversample_gmm(BaseEstimator, TransformerMixin):
             
             self.gmm_models['gmm_' + str(sample_class)] = gmm
 
-        return self.gmm_models
+        return self
 
     
     def transform(self, X, y=None):
         #Implement transformation
         classes, samples_values, class_most_n = self.sample_numbers(X, y)
+
+        X = pd.DataFrame(data=X)
+        y = pd.DataFrame(data=y)
 
         X_resampled = X.copy()
         y_resampled = y.copy()
@@ -79,14 +90,8 @@ class oversample_gmm(BaseEstimator, TransformerMixin):
         
             X_resampled = pd.concat([X_resampled, X_sampled_data], ignore_index=True)
             y_resampled = pd.concat([y_resampled, y_sampled_data], ignore_index=True)
+            print(X_resampled.shape, y_resampled.shape)
+
+        X_resampled, y_resampled = shuffle(X_resampled, y_resampled, random_state=SEED)
 
         return X_resampled, y_resampled
-
-import os
-    
-X_train = pd.read_csv(os.path.join('data', 'X_train.csv')) 
-y_train = pd.read_csv(os.path.join('data', 'y_train.csv'))
-gmm = oversample_gmm()
-
-gmm.fit(X_train, y_train)
-gmm.transform(X_train, y_train)

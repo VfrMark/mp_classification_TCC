@@ -9,40 +9,26 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.dummy import DummyClassifier
 
 #Imblearn modules
-from imblearn.over_sampling import RandomOverSampler
 from imblearn.pipeline import Pipeline
+
+from gmm_oversampling import oversample_gmm
 
 #Config file
 import config
 
 #Fix seed to reproducibility
-seed = config._seed()
+SEED = config._seed()
         
     
-def build_pipe(over_sample = False, gmm = True):
+def build_pipe():
     
     prefix = ''
     
     pre_pipe =[
         ('std', StandardScaler())
+        , ('gmm', oversample_gmm())
         , ('estimator', DummyClassifier())
-        ]     
-
-    if(over_sample):
-        
-       prefix += 'over_'
-
-       pre_pipe.insert(-1, ('over_sample',
-                            RandomOverSampler(random_state = seed)) 
-                             )
-
-    if(gmm):
-        
-       prefix += 'gmm_'
-
-       pre_pipe.insert(-1, ('gmm_',
-                            GaussianMixture(random_state = seed)) 
-                             )
+        ]
 
     return  Pipeline(pre_pipe), prefix
 

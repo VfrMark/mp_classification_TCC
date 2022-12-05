@@ -26,20 +26,19 @@ import config
 seed = config._seed()
 gs_folder = config._get_path('grid_search')
 
-def search(over_sample = True, 
-           param_grid = search_grid(),
+def search(param_grid = search_grid(),
            prefix = '',
            n_jobs = 1,
-           save = True
+           save = True,
         ):
     
     
     print('Loading training set...')
-    X_train = pd.read_csv(os.path.join('data', 'X_train.csv')) 
-    y_train = pd.read_csv(os.path.join('data', 'y_train.csv')).values.ravel() 
+    X_train = pd.read_csv(os.path.join('data', 'X_train.csv'))
+    y_train = pd.read_csv(os.path.join('data', 'y_train.csv'))
     
     print('Building pipeline...')
-    pipe, file_name = build_pipe(over_sample = over_sample)
+    pipe, file_name = build_pipe()
     
     file_name = prefix + file_name + 'gs.csv'
     
@@ -79,11 +78,11 @@ def run_gs():
     i = 0
     print('RadomizedSearch across several combinations')
           
-    for over in [False, True]:
+    for over in [True]:
         
         i += 1
         
-        grid = search_grid() # neural_grid() if nn else classical_grid() (Maybe use nn in future)
+        grid = search_grid()
         
         file_name = f_name(over_sample= over)
     
@@ -95,8 +94,7 @@ def run_gs():
         else:
             print("{0} iteration ({1}/32)...".format(file_name, str(i)))
             start = timer()
-            search(over_sample = over, 
-                   param_grid = grid['svc'],
+            search(param_grid = grid['gmm_svc'],
                    n_jobs = 1)
             end = timer()
             append_time(file_name, str(end - start))
