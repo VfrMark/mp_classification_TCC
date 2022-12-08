@@ -47,7 +47,7 @@ def process_value(val):
 
     return val
 
-def search_grid(n_parameters_by_model=50):
+def search_grid(n_parameters_by_model=15):
 
     grid = {}
     _grid = get_grid()

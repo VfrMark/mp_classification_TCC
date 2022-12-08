@@ -39,6 +39,6 @@ def pipe_config(file_name):
     over_sample = True if 'over' in values else False
     gmm = True if 'gmm' in values else False
 
-    return over_sample, 
+    return over_sample
   
     

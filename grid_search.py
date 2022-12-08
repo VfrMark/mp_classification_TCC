@@ -44,7 +44,7 @@ def search(param_grid = search_grid(),
     
     print('The file name is: ' + file_name)
       
-    cv_fixed_seed = StratifiedKFold(n_splits = 5, shuffle = False)
+    cv_fixed_seed = StratifiedKFold(n_splits = 2, shuffle = False)
 
     print('Running parameter search (It can take a long time) ...')
     search = RandomizedSearchCV(pipe,
@@ -53,7 +53,8 @@ def search(param_grid = search_grid(),
                           cv = cv_fixed_seed,
                           n_jobs = n_jobs,
                           verbose = 100,
-                          random_state = seed
+                          random_state = seed,
+                          n_iter = 2
                         )
 
     search = search.fit(X_train, y_train)
@@ -77,27 +78,25 @@ def run_gs():
     
     i = 0
     print('RadomizedSearch across several combinations')
-          
-    for over in [True]:
         
-        i += 1
-        
-        grid = search_grid()
-        
-        file_name = f_name(over_sample= over)
+    i += 1
     
-        file_path = os.path.join(gs_folder, file_name)
+    grid = search_grid()
+    
+    file_name = f_name()
+
+    file_path = os.path.join(gs_folder, file_name)
+    
+    if os.path.isfile(file_path):
+        print(file_name + " already exists, iteration was skipped ...")
         
-        if os.path.isfile(file_path):
-            print(file_name + " already exists, iteration was skipped ...")
-            
-        else:
-            print("{0} iteration ({1}/32)...".format(file_name, str(i)))
-            start = timer()
-            search(param_grid = grid['gmm_svc'],
-                   n_jobs = 1)
-            end = timer()
-            append_time(file_name, str(end - start))
+    else:
+        print("{0} iteration ({1}/32)...".format(file_name, str(i)))
+        start = timer()
+        search(param_grid = grid['gmm_svc'],
+               n_jobs = 1)
+        end = timer()
+        append_time(file_name, str(end - start))
             
     print("RadomizedSearch fully finished...")
 

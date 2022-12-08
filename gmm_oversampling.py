@@ -70,7 +70,7 @@ class oversample_gmm(BaseEstimator, TransformerMixin):
     
     def transform(self, X, y=None):
         #Implement transformation
-        classes, samples_values, class_most_n = self.sample_numbers(X, y)
+        classes, samples_values, _ = self.sample_numbers(X, y)
 
         X = pd.DataFrame(data=X)
         y = pd.DataFrame(data=y)
@@ -87,9 +87,12 @@ class oversample_gmm(BaseEstimator, TransformerMixin):
             
             preparing_labels = [sample_class for n in range(sample_numbers)]
             y_sampled_data = pd.DataFrame(preparing_labels, columns = ['label'])
+
+            print(X_resampled.shape, y_resampled.shape)
         
             X_resampled = pd.concat([X_resampled, X_sampled_data], ignore_index=True)
             y_resampled = pd.concat([y_resampled, y_sampled_data], ignore_index=True)
+            
             print(X_resampled.shape, y_resampled.shape)
 
         X_resampled, y_resampled = shuffle(X_resampled, y_resampled, random_state=SEED)
